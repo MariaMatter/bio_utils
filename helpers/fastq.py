@@ -41,7 +41,7 @@ def calculate_mean_quality(quality):
 
     return mean_quality
 
-def check_gc_bounds(sequence, gc_bounds):
+def check_gc_bounds(sequence, gc_bounds=(0, 100)):
     """
     Checks whether GC content is within the specified bounds.
 
@@ -63,5 +63,47 @@ def check_gc_bounds(sequence, gc_bounds):
 
     else:
         raise ValueError("gc_bounds must be a number or a pair of numbers")
+
+def check_length_bounds(sequence, length_bounds=(0, 2**32)):
+    """
+    Checks whether sequence length is within the specified bounds.
+
+    Args:
+        sequence: A nucleotide sequence.
+        length_bounds: A number of an upper sequence length bound or a tuple, 
+        containig minimum and maximum sequence length bounds.
+
+    Returns:
+        True if sequence length is within bounds, otherwise False.
+    """
+    sequence_length = len(sequence)
+
+    if isinstance(length_bounds, (int, float)):
+        return sequence_length <= length_bounds
+
+    elif len(length_bounds) == 2:
+        return length_bounds[0] <= sequence_length <= length_bounds[1]
+
+    else:
+        raise ValueError("length_bounds must be a number or a pair of numbers")
+
+
+def check_quality_threshold(quality, quality_threshold):
+    """
+    Checks whether mean read quality reaches the threshold.
+
+    Args:
+        quality: A string with quality scores.
+        quality_threshold: Minimum acceptable mean quality.
+
+    Returns:
+        True if mean quality reaches the threshold, otherwise returns False.
+    """
+    mean_quality = calculate_mean_quality(quality)
+
+    if mean_quality >= quality_threshold:
+        return True
+    else:
+        return False
 
 
