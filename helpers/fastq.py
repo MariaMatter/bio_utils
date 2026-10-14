@@ -18,3 +18,27 @@ def calculate_gc(sequence):
 
     return gc_percent
 
+def calculate_mean_quality(quality):
+    """
+    Calculates the mean Phred score of a read.
+
+    Args:
+        A string with quality scores from fastq file.
+
+    Returns:
+        Mean quality score.
+    """
+    quality_sum = 0
+
+    for symbol in quality:
+        quality_score = ord(symbol) - 33
+        quality_sum = quality_sum + quality_score
+
+    if len(quality) == 0:
+        return ValueError
+
+    mean_quality = quality_sum / len(quality)
+
+    return mean_quality
+
+
