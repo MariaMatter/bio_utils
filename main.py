@@ -1,6 +1,6 @@
 import os
 
-from helpers import fastq as fq
+from .helpers import fastq as fq
 
 def filter_fastq(
     input_fastq,
