@@ -12,7 +12,7 @@ def calculate_gc(sequence):
     gc_count = sequence.upper().count("G") + sequence.upper().count("C")
 
     if len(sequence) == 0:
-        return ValueError("The length of a nucleotide sequence must be not zero")
+        raise ValueError("The length of a nucleotide sequence must be not zero")
 
     gc_percent = gc_count / len(sequence) * 100
 
@@ -35,7 +35,7 @@ def calculate_mean_quality(quality):
         quality_sum = quality_sum + quality_score
 
     if len(quality) == 0:
-        return ValueError("The length of a quality sequence must be not zero")
+        raise ValueError("The length of a quality sequence must be not zero")
 
     mean_quality = quality_sum / len(quality)
 
@@ -88,7 +88,7 @@ def check_length_bounds(sequence, length_bounds=(0, 2**32)):
         raise ValueError("length_bounds must be a number or a pair of numbers")
 
 
-def check_quality_threshold(quality, quality_threshold):
+def check_quality_threshold(quality, quality_threshold=0):
     """
     Checks whether mean read quality reaches the threshold.
 
