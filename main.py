@@ -1,6 +1,7 @@
 import os
 
 from .helpers import fastq as fq
+from .helpers import bio_files as bf
 
 def filter_fastq(
     input_fastq,
@@ -19,6 +20,9 @@ def filter_fastq(
         gc_bounds: Minimum and maximum GC percentages, or an upper bound.
         length_bounds: Minimum and maximum read lengths, or an upper bound.
         quality_threshold: Minimum acceptable mean quality score.
+
+    Returns:
+        Path to the filtered FASTQ file.
     """
     os.makedirs("filtered", exist_ok=True)
 
@@ -63,3 +67,52 @@ def filter_fastq(
                     output_file.write(
                         f"{header}\n{sequence}\n{separator}\n{quality}\n"
                     )
+    print ("Results are saved in"), output_path
+    return output_path
+
+
+def convert_multiline_fasta_to_oneline(input_fasta, output_fasta):
+    """
+    Converts a multiline FASTA file into a file with one line per sequence.
+
+    Args:
+        input_fasta: Path to the input FASTA file.
+        output_fasta: Path to the output FASTA file.
+
+    Returns:
+        Path to the output FASTA file.
+    """
+    with open(input_fasta, "r") as input_file:
+        with open(output_fasta, "w") as output_file:
+
+            header = None
+            sequence = ""
+
+            for line in input_file:
+                line = bf.remove_line_ending(line)
+
+                if line == "":
+                    continue
+
+                if bf.is_fasta_header(line):
+
+                    if header is not None:
+                        output_file.write(sequence + "\n")
+
+                    header = line
+                    output_file.write(header + "\n")
+                    sequence = ""
+
+                else:
+                    if header is None:
+                        raise ValueError(
+                            "FASTA sequence found before the first header"
+                        )
+
+                    sequence = sequence + line
+
+            if header is not None:
+                output_file.write(sequence + "\n")
+
+    print ("Results are saved in"), output_fasta
+    return output_fasta
